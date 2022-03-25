@@ -1,0 +1,18 @@
+:root {
+    --colorTextos: #00000067;
+}
+
+*,
+::before,
+::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto';
+    background: #46465e;
+    height: 820px;
+ 
+}
