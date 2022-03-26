@@ -8,28 +8,28 @@ const templateCard= document.getElementById("template-card").content;
 //Utilizamos el .content para acceder al elemento template-card
 
 const fragment = document.createDocumentFragment();
-//Creamos un fragment, es como una memoria volatil, se disuelve, se va! por eso no se genera ese REFLOW - 1 FRAGMENT PARA TODO LO QUE QUERRAMOS HACER-
+//Creamos un fragment, memoria volatil, se disuelve. Por eso no se genera ese REFLOW 
+//1 -FRAGMENT PARA TODO LO QUE QUERRAMOS HACER-
 //EJECUTAR EL FetchData en el HTML//
 //AddEvenListener - va a esperar a que se LEA todo nuestro HTML y luego va a ejecute nuestras funciónes//
 //DOMContentLoaded - se dispara cuando nuestro documento HTML ha sido cargado y parseado//
 //Variable carrito para que sea una coleccion de objetos--
 let carrito = {};
-//La coleccion de objetos no va a estar vacia, una vez que se carga el sitio web (DOMContentloaded)
-//Que leemos los productos (fetchData) podemos hacer la pregunta de LocalStorage con IF.
+//La coleccion de objetos no va a estar vacia, una vez que se carga el sitio web (DOMContentloaded),
+//que leemos los productos (fetchData) podemos hacer la pregunta de LocalStorage con IF.
 // Eventos
 // El evento DOMContentLoaded es disparado cuando el documento HTML ha sido completamente cargado y parseado
 document.addEventListener("DOMContentLoaded", ()=>{
     fetchData();
-    //si llegase a existir esto en el localStorage, si existiera la llave.
-    //.getItem() interfaz de storage, cuando se le pasa un nombre clave,devolvera el valor de esa clave.
-    //JSON.parse-- analiza una cadena JSON. construyendo el valor u objeto Javascript descrito por la cadena.
-    //'carrito' vendria ser la llave.(Key) si existiera, nosotros en carrito= que es nuestra coleccion de objetos
-    //Llenamos con esa informacion que viene del localStorage.
+ //.getItem() interfaz de storage, cuando se le pasa un nombre clave,devolvera el valor de esa clave.
+ //JSON.parse-- analiza una cadena JSON. construyendo el valor u objeto Javascript descrito por la cadena.
+//'carrito' es la llave.(Key) si existiera, nosotros en carrito= que es nuestra coleccion de objetos
+ //Llenamos con esa informacion que viene del localStorage.
     if(localStorage.getItem('carrito')){
 carrito =JSON.parse(localStorage.getItem('carrito'))
     }
 });
-//En cards quiero que detecte un click,utilizo el (e) para capturar el elemento que nosotros queremos modificar//
+//En cards se detecta un click, se utiliza el (e) para capturar ese mismo elemento que queremos modificar//
 cards.addEventListener("click", e => {
     addCarrito(e);
 });
@@ -70,28 +70,27 @@ const pintarCards = data => {
   cards.appendChild(fragment);
 }
 //addCarrito captura la e , utilizo el e.target para la delegacion del evento
-//addCarrito es el evento que creamos en cards, cuando nosotros lo ejecutamos presionamos el click,
+//addCarrito es el evento que creamos en cards, nosotros lo ejecutamos cuando presionamos el click,
 //y mandamos todo ese elemento padre a setCarrito.
 //Agregar al carrito
 const addCarrito = e => {
-   // console.log(e.target);
-   // console.log(e.target.classList.contains("btn-dark"));
-    //Aca estamos preguntando que si el elemento que le estamos haciendo click,
-    //contiene la clase que nosotros le pasamos dentro del parentesis(devuelve un valor booleano) que es TRUE.
-    //Ejecutamos una accion con if (que es agregar la info al carrito)
+// console.log(e.target);
+// console.log(e.target.classList.contains("btn-dark"));
+//Preuntamos si el elemento que le estamos haciendo click,
+//contiene la clase que nosotros le pasamos dentro del parentesis(devuelve un valor booleano) que es TRUE.
+//Ejecutamos una accion con if (que es agregar la info al carrito)
     
     if(e.target.classList.contains("btn-dark")){
       setCarrito(e.target.parentElement);
     }
-    //stopPropagation es para detener cualquier otro evento que se podia generar en nuestros cards.
-    //Por que se heredan los eventos del contenedor padre.
+//stopPropagation es para detener cualquier otro evento que se podia generar en nuestros cards.
+//Por que se heredan los eventos del contenedor padre.
     e.stopPropagation();
 }
-// funcion para manipular nuestro objeto de carro--Este objeto son todos los elementos seleccionados
-// Cuando apreto el boton comprar voy a seleccionar todos los elementos y esos mismos los voy a empujar a esta funcion.
+//Funcion para manipular nuestro objeto de carro--Este objeto son todos los elementos seleccionados
+//Apreto el boton comprar voy a selecc. todos los elementos,esos mismos los voy a empujar a esta funcion.
 //Captura esos elementos de addCarrito
-const setCarrito = item => {
-  //console.log(objeto);
+const setCarrito = item => {;
   const producto = {
       id: item.querySelector('button').dataset.id,
       title: item.querySelector('h5').textContent,
@@ -101,21 +100,20 @@ const setCarrito = item => {
   //hasOwnProperty(prop) devuelve un valor booleano indicando si el objeto tiene la propiedad especificada
   //si esto existe , quiero decir que el producto(item) se duplique para aumentar la cantidad
   //solo accedemos al item(elemento) que se esta repitiendo y ahi le aumentamos la cantidad.
-  //carrito es nuestra coleccion de objetos, una vez que accedemos , es solamente a la cantidad y le aumentamos 1
+  //carrito es nuestra colecc. de objetos, una vez que accedemos, es solamente a la cantidad y le aumentamos 1
   if(carrito.hasOwnProperty(producto.id)){
    producto.cantidad = carrito[producto.id].cantidad + 1 
    
   }
-  //Ahora una vez que tengo el objeto item creado, tengo que empujarlo al carrito. su propiedad [] indexeado
+  //Tengo el objeto item creado, lo al carrito. su propiedad [] indexeado
   carrito[producto.id] = { ...producto };
   pintarCarrito();
-  //[item.id] creo el INDEX con esto, si no existe lo crea igual pero si existe  lo va a sobreescribir--
-  //{...item} -- copia de item, ... es spread operation con eso estamos adquiriendo una copia de informacion de item.
+  //[item.id] Creo el INDEX con esto, si no existe lo crea igual pero si existe  lo va a sobreescribir--
+  //{...item}-Copia de item, ... Spread Operation con eso estamos adquiriendo una copia de informacion de item.
 }
-
+//Pintamos carrito
 const pintarCarrito = () => {
-//console.log(carrito);
-//Tengo que reccorer el objeto carrito con un forEach, pero antes de eso tengo que hacer Object.values
+//Recorro el objeto carrito con un forEach, pero antes de eso tengo que hacer Object.values
 //Por que antes estamos trabajando con un objeto y no se puede modificar un obj o no se puede ocupar
 //las funciones de los Arrays, utilizando .values la podemos ocupar.
 //Con innerHTML -- Limpiariamos nuestro HTML y partiria vacio.(se reinicia)
@@ -125,7 +123,7 @@ Object.values(carrito).forEach(producto => {
     //Utilizo querySelectorAll ya que hay mas de 1 etiquetas "td" y es un ARRAYS ,los ubico por su indice.
     templateCarrito.querySelectorAll('td')[0].textContent = producto.title;
     templateCarrito.querySelectorAll('td')[1].textContent = producto.cantidad;
-    //botones
+    //Botones
     templateCarrito.querySelector('.btn-info').dataset.id = producto.id;
     templateCarrito.querySelector('.btn-danger').dataset.id = producto.id;
     //Cada vez que se aumente la cantidad, lo multiplicamos por su precio. Asi nos da el TOTAL.
@@ -142,27 +140,27 @@ Object.values(carrito).forEach(producto => {
 
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
-
+//Pintamos footer
 const pintarFooter = () => {
 footer.innerHTML = "";
 //object.keys devuelve una matriz de los nombres de propiedad enumerables propios de un objeto determinado.
-//En este caso decimos que en el if-- si lo que tiene carrito y sus elementos es igual a 0 devolveme lo de abajo.
+//Decimos que en el if-- si lo que tiene carrito y sus elementos es igual a 0 devolveme lo de abajo.
 if(Object.keys(carrito).length === 0){
     footer.innerHTML = `
     <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>
  `
-//si no estuviera el return seguiria haciendo la operacion de abajo, con el mismo se sale de la funcion.
+//Si no estuviera el return seguiria haciendo la operacion de abajo, con el mismo se sale de la funcion.
 // Y no lo va a seguir leyendo.
  return;
 }
-//Como carrito -- es una coleccion de objetos no podemos utilizar todas las funcionalidades del arrays --
+//Carrito -- es una coleccion de objetos no podemos utilizar todas las funcionalidades del arrays --
 //En cambio utilizando object.values si podemos.
-//reduce -- toma una funcion de flecha, y nosotros vamos a recorrer dentro de nuestra coleccion de obj.
-//Vamos a usar un acumulador (acc) va que vaya por cada iteracion acumulando lo que nosotros hagamos como suma
-//Acumulamos la cantidad y asi seguir para la 2da vuelta y etc...
+//Reduce -- toma una funcion de flecha, y nosotros vamos a recorrer dentro de nuestra coleccion de obj.
+//Vamos a usar un acumulador (acc) que vaya por cada iteracion acumulando lo que nosotros hagamos como suma
+//Acumulamos la cantidad y asi seguir la 2da vuelta y etc.
 //pero para hacer la suma necesitamos acceder a la cantidad.
 //lo que vamos a devolver es un numero por eso ponemos 0
-//sumar cantidad y sumar totales
+//Sumar cantidad y sumar totales
 const nCantidad = Object.values(carrito).reduce((acc, {cantidad})=> acc + cantidad,0);
 const nPrecio = Object.values(carrito).reduce((acc, {cantidad, precio})=> acc + cantidad * precio,0);
 
@@ -175,11 +173,12 @@ fragment.appendChild(clone);
 //Como esto no es un ciclo lo agregamos aca
 footer.appendChild(fragment);
 
+//Botones
 const btnVaciar = document.getElementById('vaciar-carrito')
 btnVaciar.addEventListener('click', () =>{
     carrito = {};
     pintarCarrito();
-})
+});
 
 const btnFinalizar = document.getElementById("finalizarCompra")
 btnFinalizar.addEventListener('click', () =>{
@@ -189,9 +188,10 @@ btnFinalizar.addEventListener('click', () =>{
         'You clicked the button!',
         'success'
       )
-})
+});
 
-}
+};
+//Botones
 const btnAccion = e => {
     //Acccion de aumentar
     if(e.target.classList.contains('btn-info')){
@@ -211,4 +211,4 @@ const btnAccion = e => {
     }
 }
    e.stopPropagation();
-}
+};
